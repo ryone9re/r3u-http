@@ -1,0 +1,5 @@
+{
+    "code-runner.executorMap": {
+        "c": "gcc -Wall -Werror -Wextra -O2 -o $dir$fileNameWithoutExt $fullFileName"
+    }
+}
