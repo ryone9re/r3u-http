@@ -10,6 +10,8 @@
             "name": "Debug",
             "program": "${fileDirname}/compiled",
             "args": [
+                "--debug",
+                "--port=8080",
                 "${workspaceFolder}/root"
             ],
             "cwd": "${workspaceFolder}",
