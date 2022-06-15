@@ -3,6 +3,7 @@
 #include <fcntl.h>
 #include <getopt.h>
 #include <grp.h>
+#include <linux/limits.h>
 #include <netdb.h>
 #include <pwd.h>
 #include <string.h>
@@ -98,7 +99,7 @@ int main(int argc, char **argv)
     char *group = NULL;
     char *port = DEFAULT_PORT;
     struct stat fi;
-    char *docroot;
+    char docroot[PATH_MAX];
 
     while ((opt = getopt_long(argc, argv, "", longopts, NULL)) != -1)
     {
@@ -131,7 +132,21 @@ int main(int argc, char **argv)
         fprintf(stderr, USAGE, argv[0]);
         exit(1);
     }
-    docroot = argv[optind];
+    if (isalnum(argv[optind][0]))
+    {
+        char t[PATH_MAX];
+
+        if (getcwd(t, sizeof(t)) == NULL)
+        {
+            perror("getcwd(3)");
+            exit(1);
+        }
+        strcpy(docroot, t);
+        strcpy(docroot + strlen(docroot), "/");
+        strcpy(docroot + strlen(docroot), argv[optind]);
+    }
+    else
+        strcpy(docroot, argv[optind]);
     if (lstat(docroot, &fi) < 0)
         log_exit("%s", strerror(errno));
     if (!S_ISDIR(fi.st_mode))
@@ -140,7 +155,7 @@ int main(int argc, char **argv)
     if (do_chroot)
     {
         setup_environment(docroot, user, group);
-        docroot = "";
+        memset(docroot, '\0', sizeof(docroot));
     }
     if (!debug_mode)
     {
@@ -485,7 +500,7 @@ static void output_common_header_fields(struct HTTPRequest *req, FILE *out, char
 static char *guess_content_type(struct FileInfo *info)
 {
     (void)info;
-    return ("text/plain");
+    return ("text/html");
 }
 
 static void method_not_allowed(struct HTTPRequest *req, FILE *out)

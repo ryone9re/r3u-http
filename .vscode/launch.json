@@ -12,7 +12,7 @@
             "args": [
                 "--debug",
                 "--port=8080",
-                "${workspaceFolder}/root"
+                "root/"
             ],
             "cwd": "${workspaceFolder}",
             "preLaunchTask": "C/C++: gcc アクティブなファイルのビルド",
