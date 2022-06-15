@@ -122,7 +122,7 @@ int main(int argc, char **argv)
             fprintf(stdout, USAGE, argv[0]);
             exit(0);
         case '?':
-            fprintf(stdout, USAGE, argv[0]);
+            fprintf(stderr, USAGE, argv[0]);
             exit(1);
         }
     }
@@ -207,12 +207,12 @@ static void become_daemon()
         perror("freopen(3)");
         exit(1);
     }
-    if (freopen("/dev/null", "r", stdout) == NULL)
+    if (freopen("/dev/null", "w", stdout) == NULL)
     {
         perror("freopen(3)");
         exit(1);
     }
-    if (freopen("/dev/null", "r", stderr) == NULL)
+    if (freopen("/dev/null", "w", stderr) == NULL)
     {
         perror("freopen(3)");
         exit(1);
